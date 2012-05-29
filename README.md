@@ -6,7 +6,7 @@ Current state: Working but hacky. No exceptions, only basic error checking. No t
 
 ## Example
 
-	import fitocracy-export.api
+	import api
 	sesh = api.APISession()
 	sesh.login("user", "pass")
 	sesh.get_all_activity_data()
@@ -14,7 +14,7 @@ Current state: Working but hacky. No exceptions, only basic error checking. No t
 
 alternatively:
 
-	import fitocracy-export.api
+	import api
 	sesh = api.APISession()
 	sesh.login("user", "pass")
 	data = sesh.get_all_activity_data()
@@ -22,7 +22,7 @@ alternatively:
 
 or:
 
-	import fitocracy-export.api
+	import api
 	sesh = api.APISession()
 	sesh.login("user", "pass")
 	squat_data = sesh.get_activity_data('Barbell Squat')
