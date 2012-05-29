@@ -1,13 +1,9 @@
 import json
 import re
 import pickle
-import threading
 from http.cookiejar import CookieJar
 from urllib.request import urlopen, HTTPCookieProcessor, build_opener, Request
 from urllib.parse import urlencode, unquote_to_bytes
-
-#from lxml.etree import fromstring, XMLParser
-#from lxml.html.soupparser import fromstring
 
 class APISession(object):
     def __init__(self):
@@ -19,6 +15,8 @@ class APISession(object):
         self.activity_data = False
         self.logged_in = False
 
+    # Logs you in to Fitocracy. Cookies are stored throughout the session,
+    # although I'm pretty sure they're only needed to acquire the user id
     def login(self, user, password):
         login = self.opener.open(self.login_url)
     
@@ -60,17 +58,7 @@ class APISession(object):
         # For each value found, we can make a call to:
         # http://www.fitocracy.com/get_history_json_from_activity/{ACTIVITY}/?max_sets=-1&max_workouts=-1&reverse=1
         # where {ACTIVITY} is the value for the activity in question (a number).
-        #cleaned_content = re.sub("<script.*?>.*</script>", "", content)
-        #document = fromstring(cleaned_content)
-
-        #selection = document.find(".//select[@id='history_activity_chooser']")
-        #for option in selection.findall("option"):
-        #    activity_list[option.text] = option.get("value")
-
-        #select_list = re.search(
-                    #"""<select id="history_activity_chooser".+>
-                    #(.*)
-                    #</select>""", content, re.X).group(1)
+        # this is done by the _get_activity_data_by_id function
 
         if not self.user_id:
             self._get_user_id()
@@ -101,11 +89,16 @@ class APISession(object):
         for activity in self.activity_list:
             self._get_activity_data_by_id(activity['id'])
 
+    # Returns a list of activities. Each activity has an id, name, and count.
+    # Bench press and barbell squat have id's 1 and 2. First exercises they put in, probably. Solid.
     def get_activity_list(self):
             self._get_activity_list()
+            return self.activity_list
 
     # Does not check cache for activity data, although it adds to it.
     # Also returns data.
+    # identifier can be either an integer ID (faster) or the name of the exercise, 
+    # although the name must be exact.
     def get_activity_data(self, identifier):
             if type(identifier) is int:
                 self._get_activity_data_by_id(identifier)
@@ -120,14 +113,20 @@ class APISession(object):
                 else:
                     return False
 
+    # This takes a longass time.
     def get_all_activity_data(self):
         self._get_all_activities()
         return self.activity_data
 
-    def _pickle(self, filename):
+    def pickle(self, filename):
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
 
     def save_activity_data(self, filename):
         with open(filename, 'w') as f:
             json.dump(self.activity_data, f)
+
+# Loads a pickled session
+def session_from_file(filename):
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
