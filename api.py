@@ -1,11 +1,10 @@
-
 import json
 import re
 from http.cookiejar import CookieJar
 from urllib.request import urlopen, HTTPCookieProcessor, build_opener, Request
 from urllib.parse import urlencode, unquote_to_bytes
 
-from lxml.etree import fromstring, XMLParser
+#from lxml.etree import fromstring, XMLParser
 #from lxml.html.soupparser import fromstring
 
 class APISession(object):
@@ -48,6 +47,7 @@ class APISession(object):
 
         response = self.opener.open("http://www.fitocracy.com/profile")
         content = str(response.read())
+
         self.user_id = re.search("""var user_id = "(.+?)";""", content).group(1)
 
     def _get_activity_list(self):
@@ -73,9 +73,7 @@ class APISession(object):
 
         response = self.opener.open("http://fitocracy.com/get_user_activities/{0}/".format(self.user_id))
 
-        content = str(response.read())
-
-        print(content)
+        content = response.read().decode("utf8")
 
         self.activity_list = json.loads(content)
         
@@ -83,7 +81,7 @@ class APISession(object):
         
         response = self.opener.open("http://fitocracy.com/get_history_json_from_activity/{0}/".format(id), b'max_sets=-1&max_workouts=-1&reverse=1')
 
-        self.activity_data[id]['data'] = json.loads(str(response.read()))
+        self.activity_data[id]['data'] = json.loads(response.read().decode("utf8"))
 
     def _get_all_activities(self):
 
@@ -91,8 +89,4 @@ class APISession(object):
             self._get_activity_list()
         
         for activity in self.activity_list:
-            self._get_activity_data_by_id(str(activity['id']))
-
-api = APISession()
-api._get_all_activities()
-print(api.activity_list)
+            self._get_activity_data_by_id(activity['id'])
