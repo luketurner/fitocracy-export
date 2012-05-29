@@ -15,6 +15,7 @@ class APISession(object):
         self.activity_list = False
         self.user_id = False
         self.activity_data = False
+        self.logged_in = False
 
     def login(self, user, password):
         login = self.opener.open(self.login_url)
@@ -41,6 +42,7 @@ class APISession(object):
         if "Please enter a correct username and password" in content:
             return False
         else:
+            self.logged_in = True
             return True
 
     def _get_user_id(self):
@@ -79,9 +81,13 @@ class APISession(object):
         
     def _get_activity_data_by_id(self, id):
         
-        response = self.opener.open("http://fitocracy.com/get_history_json_from_activity/{0}/".format(id), b'max_sets=-1&max_workouts=-1&reverse=1')
+        response = self.opener.open("http://fitocracy.com/get_history_json_from_activity/{0}/".format(id), 
+            b'max_sets=-1&max_workouts=-1&reverse=1')
 
-        self.activity_data[id]['data'] = json.loads(response.read().decode("utf8"))
+        if not self.activity_data:
+            self.activity_data = {}
+
+        self.activity_data[id] = json.loads(response.read().decode("utf8"))
 
     def _get_all_activities(self):
 
@@ -90,3 +96,7 @@ class APISession(object):
         
         for activity in self.activity_list:
             self._get_activity_data_by_id(activity['id'])
+
+    def _pickle(self, filename):
+        with open(filename) as f:
+            pickle.dump(self, f)
