@@ -1,5 +1,7 @@
 import json
 import re
+import pickle
+import threading
 from http.cookiejar import CookieJar
 from urllib.request import urlopen, HTTPCookieProcessor, build_opener, Request
 from urllib.parse import urlencode, unquote_to_bytes
@@ -87,6 +89,8 @@ class APISession(object):
         if not self.activity_data:
             self.activity_data = {}
 
+        print("getting some data")
+
         self.activity_data[id] = json.loads(response.read().decode("utf8"))
 
     def _get_all_activities(self):
@@ -97,6 +101,32 @@ class APISession(object):
         for activity in self.activity_list:
             self._get_activity_data_by_id(activity['id'])
 
+    def get_activity_list(self):
+            self._get_activity_list()
+
+    # Does not check cache for activity data, although it adds to it.
+    # Also returns data.
+    def get_activity_data(self, identifier):
+            if identifier is int:
+                self._get_activity_data_by_id(identifier)
+                return self.activity_data[identifier]
+
+            if identifier is str and self.activity_list:
+                for activity in self.activity_list:
+                    if activity['name'] == identifier:
+                        self.get_activity_data_by_id(activity['id'])
+                        return self.activity_data[activity['id']]
+
+    def get_all_activity_data(self):
+        self._get_all_activities()
+        return self.activity_data
+
+
+
     def _pickle(self, filename):
-        with open(filename) as f:
+        with open(filename, 'wb') as f:
             pickle.dump(self, f)
+
+    def save_activity_data(self, filename):
+        with open(filename, 'w') as f:
+            json.dump(self.activity_data, f)
