@@ -2,4 +2,28 @@
 
 Apparently, yes. I'm working on it though, man. 
 
-Completion state: Well, it works, but slowly. Still needs threading and publix export functions.
+Current state: Working but hacky. No exceptions, only basic error checking. No threads, so getting all data takes minutes. 
+
+## Example
+
+	import fitocracy-export.api
+	sesh = api.APISession()
+	sesh.login("user", "pass")
+	sesh.get_all_activity_data()
+	sesh.save_activity_data("data.json")
+
+alternatively:
+
+	import fitocracy-export.api
+	sesh = api.APISession()
+	sesh.login("user", "pass")
+	data = sesh.get_all_activity_data()
+	... do something with data ...
+
+or:
+
+	import fitocracy-export.api
+	sesh = api.APISession()
+	sesh.login("user", "pass")
+	squat_data = sesh.get_activity_data('Barbell Squat')
+	... do something ...

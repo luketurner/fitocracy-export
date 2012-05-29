@@ -107,21 +107,22 @@ class APISession(object):
     # Does not check cache for activity data, although it adds to it.
     # Also returns data.
     def get_activity_data(self, identifier):
-            if identifier is int:
+            if type(identifier) is int:
                 self._get_activity_data_by_id(identifier)
                 return self.activity_data[identifier]
 
-            if identifier is str and self.activity_list:
-                for activity in self.activity_list:
-                    if activity['name'] == identifier:
-                        self.get_activity_data_by_id(activity['id'])
-                        return self.activity_data[activity['id']]
+            if type(identifier) is str:
+                if self.activity_list:
+                    for activity in self.activity_list:
+                        if activity['name'] == identifier:
+                            self.get_activity_data_by_id(activity['id'])
+                            return self.activity_data[activity['id']]
+                else:
+                    return False
 
     def get_all_activity_data(self):
         self._get_all_activities()
         return self.activity_data
-
-
 
     def _pickle(self, filename):
         with open(filename, 'wb') as f:
