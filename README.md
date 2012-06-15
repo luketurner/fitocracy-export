@@ -29,8 +29,8 @@ Usage:
 
 alternatively:
 
-	import api
-	sesh = api.APISession()
+	import fitocracy_export
+	sesh = fitocracy_export.APISession()
 	if sesh.login("user", "pass")
 		data = sesh.get_all_activity_data()
 
@@ -38,8 +38,8 @@ alternatively:
 
 or:
 
-	import api
-	sesh = api.APISession()
+	import fitocracy_export
+	sesh = fitocracy_export.APISession()
 	if sesh.login("user", "pass")
 		squat_data = sesh.get_activity_data('Barbell Squat')
 
