@@ -8,10 +8,19 @@ Current state: Working but hacky. No exceptions, only basic error checking. No t
 
 There isn't any, sorry. Examples below give a very general overview. If you want to know what functions the API session supports, you gotta look at the code.
 
-## Example
+## CLI Client
 
-	import api
-	sesh = api.APISession()
+Intent: Provide simple method for people to back up their data without having
+to use the API directly
+
+Usage: 
+
+    python cli.py [user] [pass]
+
+## API Example
+
+	import fitocracy_export
+	sesh = fitocracy_export.APISession()
 	if sesh.login("user", "pass"):
 		sesh.get_all_activity_data()
 		sesh.save_activity_data("data.json")
