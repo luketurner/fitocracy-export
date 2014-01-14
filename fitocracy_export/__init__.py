@@ -71,8 +71,7 @@ class APISession(object):
         
     def _get_activity_data_by_id(self, id):
         
-        response = self.opener.open("http://fitocracy.com/get_history_json_from_activity/{0}/".format(id), 
-            b'max_sets=-1&max_workouts=-1&reverse=1')
+        response = self.opener.open("http://fitocracy.com/get_history_json_from_activity/{0}/?max_sets=-1&max_workouts=-1&reverse=1".format(id))
 
         if not self.activity_data:
             self.activity_data = {}
