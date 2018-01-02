@@ -4,6 +4,10 @@ Apparently, yes. I'm working on it though, man.
 
 Current state: Working but hacky. No exceptions, only basic error checking. No threads, so getting all data takes minutes. 
 
+## Dependencies
+
+Requires Python 3.
+
 ## Documentation
 
 There isn't any, sorry. Examples below give a very general overview. If you want to know what functions the API session supports, you gotta look at the code.
